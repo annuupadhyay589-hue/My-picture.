@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dark Storm Interface</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* COMMON */
+body{
+  height:100vh;
+  overflow:hidden;
+}
+
+/* ================= LOGIN PAGE ================= */
+#loginPage{
+  height:100vh;
+  background:url("login-bg.jpg") center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.login-box{
+  backdrop-filter: blur(10px);
+  background:rgba(0,0,0,0.6);
+  padding:25px;
+  width:300px;
+  border-radius:15px;
+  text-align:center;
+  box-shadow:0 0 20px black;
+}
+
+.login-box h2{
+  color:#fff;
+  margin-bottom:20px;
+}
+
+.login-box input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  outline:none;
+  border-radius:8px;
+}
+
+.login-box button{
+  width:100%;
+  padding:10px;
+  background:blue;
+  border:none;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+/* ================= SECOND INTERFACE ================= */
+#secondPage{
+  display:none;
+  height:100vh;
+  background:url("second-bg.jpg") center/cover no-repeat;
+  position:relative;
+}
+
+.dark-filter{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  z-index:0;
+}
+
+.buttons{
+  position:relative;
+  z-index:2;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+}
+
+.buttons button{
+  padding:15px 30px;
+  border:none;
+  border-radius:30px;
+  font-size:18px;
+  cursor:pointer;
+  background: linear-gradient(70deg,darkblue,black);
+  color:white;
+  box-shadow:0 0 15px darkblue;
+}
+
+/* ================= HEART RAIN ================= */
+.heart{
+  position:absolute;
+  color:darkblue;
+  font-size:22px;
+  animation: fall linear infinite, sway ease-in-out infinite;
+  z-index:1;
+
+  /* Glow Effect */
+  text-shadow:
+    0 0 5px darkblue,
+    0 0 10px blue,
+    0 0 20px darkblue;
+
+  opacity:0.9;
+}
+
+/* Falling Animation */
+@keyframes fall{
+  0%{
+    transform: translateY(-100vh) rotate(0deg);
+    opacity:0;
+  }
+  10%{
+    opacity:1;
+  }
+  100%{
+    transform: translateY(110vh) rotate(360deg);
+    opacity:0;
+  }
+}
+
+/* Left-Right Smooth Movement */
+@keyframes sway{
+  0%{ margin-left:0px; }
+  50%{ margin-left:30px; }
+  100%{ margin-left:0px; }
+}
+
+/* ================= MY PIC SCREEN ================= */
+#picScreen{
+  display:none;
+  height:100vh;
+  background:url("second-bg.jpg") center/cover no-repeat;
+  position:relative;
+  
+}
+
+.pic-box{
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+.pic-circle{
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:url("mypic.jpg") center/cover no-repeat;
+  border:9px solid darkblue;
+  box-shadow:0 0 25px darkblue;
+  position:relative;
+}
+
+/* MUSIC WAVE BORDER */
+.pic-circle::before{
+  content:"";
+  position:absolute;
+  inset:-15px;
+  border-radius:50%;
+  border:5px dashed darkblue;
+  animation:rotate 6s linear infinite;
+}
+
+@keyframes rotate{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+
+/* EXIT BUTTON */
+.exit-btn{
+  position:absolute;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:12px 25px;
+  background: linear-gradient(70deg,darkblue,black);
+  border:none;
+  color:white;
+  border-radius:25px;
+  font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- SECOND INTERFACE -->
+<div id="secondPage">
+  <div class="dark-filter"></div>
+  <div class="buttons">
+    <button onclick="openPic()">My Pic</button>
+    <button onclick="exitAll()">Exit</button>
+  </div>
+</div>
+
+<!-- PIC SCREEN -->
+<div id="picScreen">
+  <div class="pic-box">
+    <div class="pic-circle"></div>
+  </div>
+  <button class="exit-btn" onclick="exitAll()">Exit</button>
+</div>
+
+<audio id="music" src="song.mp3" loop></audio>
+
+<script>
+const correctUser="darkstormxx";
+const correctPass="buddy";
+const music=document.getElementById("music");
+
+function login(){
+  let u=document.getElementById("username").value;
+  let p=document.getElementById("password").value;
+
+  if(u===correctUser && p===correctPass){
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("secondPage").style.display="block";
+    music.play();
+    startHearts();
+  }else{
+    alert("Invalid Login");
+  }
+}
+
+/* HEART RAIN */
+function startHearts(){
+  setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML="❤";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.animationDuration=(3+Math.random()*3)+"s";
+    document.getElementById("secondPage").appendChild(heart);
+    setTimeout(()=>heart.remove(),6000);
+  },300);
+}
+
+/* OPEN PIC */
+function openPic(){
+  document.getElementById("secondPage").style.display="none";
+  document.getElementById("picScreen").style.display="block";
+}
+
+/* EXIT */
+function exitAll(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>
